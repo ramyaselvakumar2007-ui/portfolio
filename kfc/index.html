@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KFC Premium | Order Now</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #E4002B; --bg: #0a0a0a; --glass: rgba(255,255,255,0.05); --border: rgba(255,255,255,0.1); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; scroll-behavior: smooth; }
+        body { background: var(--bg); color: #fff; overflow-x: hidden; }
+        
+        /* Particles */
+        #particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+        
+        /* Navbar */
+        nav { position: fixed; top: 0; width: 100%; padding: 20px 50px; display: flex; justify-content: space-between; align-items: center; z-index: 100; backdrop-filter: blur(10px); background: rgba(0,0,0,0.5); border-bottom: 1px solid var(--border); }
+        .logo { font-size: 2rem; font-weight: 800; color: var(--primary); letter-spacing: 2px; text-transform: uppercase; }
+        .nav-links { display: flex; gap: 20px; align-items: center; }
+        .nav-links a { color: #fff; text-decoration: none; font-weight: 600; transition: 0.3s; }
+        .nav-links a:hover { color: var(--primary); }
+        .cart-btn { background: var(--primary); padding: 10px 20px; border-radius: 30px; cursor: pointer; border: none; color: #fff; font-weight: 600; display: flex; gap: 10px; align-items: center; transition: 0.3s; }
+        .cart-btn:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(228, 0, 43, 0.5); }
+        
+        /* Hero */
+        .hero { height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; padding-top: 80px; position: relative; }
+        .hero h1 { font-size: 5rem; font-weight: 800; line-height: 1.1; text-transform: uppercase; background: linear-gradient(45deg, #fff, #E4002B); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: fadeUp 1s ease; }
+        .hero p { font-size: 1.2rem; margin-top: 20px; color: #aaa; animation: fadeUp 1.2s ease; }
+        .hero-btn { margin-top: 40px; padding: 15px 40px; background: var(--primary); border: none; color: #fff; font-size: 1.1rem; font-weight: 600; border-radius: 50px; cursor: pointer; animation: fadeUp 1.4s ease; transition: 0.3s; }
+        .hero-btn:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(228, 0, 43, 0.4); }
+        
+        /* Menu */
+        .menu-section { padding: 100px 50px; }
+        .section-title { font-size: 3rem; text-align: center; margin-bottom: 60px; font-weight: 800; text-transform: uppercase; }
+        .section-title span { color: var(--primary); }
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        
+        /* 3D Cards */
+        .menu-card { background: var(--glass); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; transform-style: preserve-3d; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .menu-card:hover { box-shadow: 0 20px 40px rgba(228, 0, 43, 0.2); }
+        .card-img { height: 200px; background-size: cover; background-position: center; border-bottom: 1px solid var(--border); }
+        .card-content { padding: 20px; }
+        .card-content h3 { font-size: 1.5rem; margin-bottom: 10px; }
+        .card-content p { font-size: 0.9rem; color: #aaa; margin-bottom: 20px; }
+        .card-bottom { display: flex; justify-content: space-between; align-items: center; }
+        .price { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
+        .add-btn { background: var(--primary); border: none; color: #fff; padding: 10px 20px; border-radius: 30px; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        .add-btn:hover { background: #fff; color: var(--primary); }
+        
+        /* Cart Sidebar */
+        .cart-sidebar { position: fixed; right: -400px; top: 0; width: 400px; height: 100%; background: #111; border-left: 1px solid var(--border); z-index: 1000; transition: 0.5s; padding: 30px; display: flex; flex-direction: column; }
+        .cart-sidebar.active { right: 0; }
+        .cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+        .cart-item { display: flex; justify-content: space-between; margin-bottom: 15px; padding: 10px; background: var(--glass); border-radius: 10px; }
+        .cart-total { margin-top: auto; border-top: 1px solid var(--border); padding-top: 20px; font-size: 1.5rem; font-weight: 800; text-align: right; }
+        .checkout-btn { width: 100%; padding: 15px; background: var(--primary); border: none; color: #fff; font-size: 1.1rem; border-radius: 30px; cursor: pointer; margin-top: 20px; font-weight: 600; transition: 0.3s; }
+        .checkout-btn:hover { background: #b8001f; }
+        
+        /* Modals */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .modal-overlay.active { display: flex; }
+        .modal { background: #1a1a1a; border: 1px solid var(--border); border-radius: 20px; padding: 40px; width: 90%; max-width: 500px; position: relative; animation: fadeIn 0.3s; }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #aaa; }
+        .form-group { margin-bottom: 20px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 12px; background: var(--glass); border: 1px solid var(--border); border-radius: 10px; color: #fff; outline: none; font-family: 'Poppins'; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #ccc; }
+        
+        /* Success & Invoice */
+        .success-icon { font-size: 4rem; color: #4caf50; text-align: center; margin-bottom: 20px; animation: scaleUp 0.5s; }
+        .invoice-box { background: #222; padding: 30px; border-radius: 10px; border: 1px solid var(--border); margin-top: 20px; }
+        .invoice-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed var(--border); }
+        .download-btn { background: #fff; color: #000; border: none; padding: 12px 20px; border-radius: 30px; cursor: pointer; font-weight: 600; margin-top: 20px; width: 100%; transition: 0.3s; }
+        .download-btn:hover { background: #ccc; }
+
+        /* Print Styles */
+        @media print {
+            body * { visibility: hidden; }
+            #printArea, #printArea * { visibility: visible; }
+            #printArea { position: absolute; left: 0; top: 0; width: 100%; background: #fff; color: #000; padding: 20px; }
+            .download-btn { display: none; }
+        }
+
+        /* Animations */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        @keyframes scaleUp { from { transform: scale(0); } to { transform: scale(1); } }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 3rem; }
+            nav { padding: 15px 20px; }
+            .menu-section { padding: 50px 20px; }
+            .cart-sidebar { width: 100%; right: -100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particles"></canvas>
+
+    <nav>
+        <div class="logo">KFC <span style="color:#fff">Premium</span></div>
+        <div class="nav-links">
+            <a href="#menu">Menu</a>
+            <button class="cart-btn" onclick="toggleCart()"><i class="fas fa-shopping-cart"></i> Cart <span id="cart-count">0</span></button>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div>
+            <h1>It's Finger<br>Lickin' Good</h1>
+            <p>Premium crispy chicken delivered to your doorstep.</p>
+            <button class="hero-btn" onclick="document.getElementById('menu').scrollIntoView()">Order Now</button>
+        </div>
+    </section>
+
+    <section id="menu" class="menu-section">
+        <h2 class="section-title">Our <span>Menu</span></h2>
+        <div class="menu-grid" id="menu-grid">
+            <!-- Items injected via JS -->
+        </div>
+    </section>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h2>Your Cart</h2>
+            <i class="fas fa-times" style="cursor:pointer;font-size:1.5rem;" onclick="toggleCart()"></i>
+        </div>
+        <div id="cart-items"></div>
+        <div class="cart-total">Total: $<span id="cart-total">0.00</span></div>
+        <button class="checkout-btn" onclick="openCheckout()">Proceed to Checkout</button>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div class="modal-overlay" id="checkout-modal">
+        <div class="modal">
+            <i class="fas fa-times close-modal" onclick="closeCheckout()"></i>
+            <h2 style="margin-bottom:20px;">Checkout</h2>
+            <div class="form-group"><label>Full Name</label><input type="text" id="c-name"></div>
+            <div class="form-group"><label>Email</label><input type="email" id="c-email"></div>
+            <div class="form-group"><label>Mobile Number</label><input type="text" id="c-mobile"></div>
+            <div class="form-group"><label>Delivery Address</label><textarea id="c-address" rows="2"></textarea></div>
+            <div class="form-group"><label>Notes (Optional)</label><input type="text" id="c-notes"></div>
+            <button class="checkout-btn" onclick="placeOrder()">Place Order</button>
+        </div>
+    </div>
+
+    <!-- Success/Invoice Modal -->
+    <div class="modal-overlay" id="invoice-modal">
+        <div class="modal" style="max-width: 600px;">
+            <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+            <h2 style="text-align:center;">Order Placed Successfully!</h2>
+            <p style="text-align:center; color:#aaa; margin-bottom:20px;">Order ID: <span id="inv-order-id" style="color:var(--primary);font-weight:800;"></span></p>
+            
+            <div id="printArea">
+                <div class="invoice-box">
+                    <h3 style="text-align:center; margin-bottom:20px; color:var(--primary);">INVOICE</h3>
+                    <div class="invoice-row"><span>Customer:</span> <span id="inv-name"></span></div>
+                    <div class="invoice-row"><span>Date:</span> <span id="inv-date"></span></div>
+                    <div style="margin: 20px 0;" id="inv-items"></div>
+                    <div class="invoice-row" style="border-top: 2px solid #fff; font-weight:800; font-size:1.2rem;"><span>Total:</span> <span id="inv-total"></span></div>
+                </div>
+            </div>
+            <button class="download-btn" onclick="printInvoice()"><i class="fas fa-download"></i> Download Bill</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB9UKK-f9ylhLQx2JnWQJgCVm0LD77va7E",
+            authDomain: "test-b9ced.firebaseapp.com",
+            databaseURL: "https://test-b9ced-default-rtdb.firebaseio.com/",
+            projectId: "test-b9ced",
+            storageBucket: "test-b9ced.firebasestorage.app",
+            messagingSenderId: "12433744712",
+            appId: "1:12433744712:web:cfc435b9699b5957b8497d",
+            measurementId: "G-F2BYPYC93C"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Data
+        const menuItems = [
+            { id: 1, name: "Original Bucket", desc: "8 pcs of our signature crispy chicken", price: 25.99, img: "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?auto=format&fit=crop&w=600&q=80" },
+            { id: 2, name: "Zinger Burger", desc: "Spicy crunch fillet with mayo and lettuce", price: 12.99, img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80" },
+            { id: 3, name: "Crispy Wings", desc: "6 piece hot wings tossed in spicy sauce", price: 9.99, img: "https://images.unsplash.com/photo-1608039829572-97381b55e060?auto=format&fit=crop&w=600&q=80" },
+            { id: 4, name: "Fries & Coleslaw", desc: "Large seasoned fries with creamy coleslaw", price: 6.99, img: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=600&q=80" },
+            { id: 5, name: "Family Feast", desc: "12 pcs chicken, 2 large sides, 4 biscuits", price: 39.99, img: "https://images.unsplash.com/photo-1594221708779-94832f4320d1?auto=format&fit=crop&w=600&q=80" },
+            { id: 6, name: "Pepsi Combo", desc: "Large Pepsi with any burger", price: 15.99, img: "https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?auto=format&fit=crop&w=600&q=80" }
+        ];
+
+        let cart = [];
+
+        // Render Menu
+        const grid = document.getElementById('menu-grid');
+        menuItems.forEach(item => {
+            grid.innerHTML += `
+                <div class="menu-card" onmousemove="handleTilt(event, this)" onmouseleave="resetTilt(this)">
+                    <div class="card-img" style="background-image: url('${item.img}')"></div>
+                    <div class="card-content">
+                        <h3>${item.name}</h3>
+                        <p>${item.desc}</p>
+                        <div class="card-bottom">
+                            <span class="price">$${item.price.toFixed(2)}</span>
+                            <button class="add-btn" onclick="addToCart(${item.id})">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        // Cart Logic
+        window.addToCart = (id) => {
+            const item = menuItems.find(i => i.id === id);
+            const existing = cart.find(i => i.id === id);
+            if(existing) existing.qty++;
+            else cart.push({...item, qty: 1});
+            updateCartUI();
+        };
+
+        window.removeFromCart = (id) => {
+            cart = cart.filter(i => i.id !== id);
+            updateCartUI();
+        };
+
+        const updateCartUI = () => {
+            const cartItemsDiv = document.getElementById('cart-items');
+            const totalCount = document.getElementById('cart-count');
+            const totalPrice = document.getElementById('cart-total');
+            
+            cartItemsDiv.innerHTML = '';
+            let total = 0;
+            let count = 0;
+
+            cart.forEach(item => {
+                total += (item.price * item.qty);
+                count += item.qty;
+                cartItemsDiv.innerHTML += `
+                    <div class="cart-item">
+                        <div><h4>${item.name}</h4><p style="color:#aaa;font-size:0.8rem;">$${item.price.toFixed(2)} x ${item.qty}</p></div>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <span style="font-weight:800;">$${(item.price*item.qty).toFixed(2)}</span>
+                            <i class="fas fa-trash" style="color:var(--primary);cursor:pointer;" onclick="removeFromCart(${item.id})"></i>
+                        </div>
+                    </div>
+                `;
+            });
+
+            totalCount.innerText = count;
+            totalPrice.innerText = total.toFixed(2);
+        };
+
+        window.toggleCart = () => {
+            document.getElementById('cart-sidebar').classList.toggle('active');
+        };
+
+        // Checkout
+        window.openCheckout = () => {
+            if(cart.length === 0) return alert("Cart is empty!");
+            document.getElementById('checkout-modal').classList.add('active');
+        };
+
+        window.closeCheckout = () => {
+            document.getElementById('checkout-modal').classList.remove('active');
+        };
+
+        window.placeOrder = async () => {
+            const name = document.getElementById('c-name').value;
+            const email = document.getElementById('c-email').value;
+            const mobile = document.getElementById('c-mobile').value;
+            const address = document.getElementById('c-address').value;
+            const notes = document.getElementById('c-notes').value;
+
+            if(!name || !email || !mobile || !address) return alert("Please fill all required fields.");
+
+            const date = new Date();
+            const dateStr = `${date.getFullYear()}${(date.getMonth()+1).toString().padStart(2,'0')}${date.getDate().toString().padStart(2,'0')}`;
+            const randStr = Math.random().toString(36).substring(2, 7).toUpperCase();
+            const orderId = `ORD-${dateStr}-${randStr}`;
+            const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+            const orderData = {
+                customerName: name,
+                email: email,
+                mobile: mobile,
+                address: address,
+                notes: notes,
+                items: cart.map(i => ({name: i.name, qty: i.qty, price: i.price})),
+                totalAmount: totalAmount,
+                orderStatus: "Pending",
+                createdAt: date.toISOString()
+            };
+
+            try {
+                await set(push(ref(db, 'orders')), { orderId, ...orderData });
+                closeCheckout();
+                showInvoice(orderId, name, date, cart, totalAmount);
+                cart = [];
+                updateCartUI();
+                toggleCart();
+            } catch(err) {
+                alert("Error placing order: " + err.message);
+            }
+        };
+
+        const showInvoice = (oid, name, date, items, total) => {
+            document.getElementById('inv-order-id').innerText = oid;
+            document.getElementById('inv-name').innerText = name;
+            document.getElementById('inv-date').innerText = date.toLocaleDateString();
+            
+            let itemsHtml = '';
+            items.forEach(item => {
+                itemsHtml += `<div class="invoice-row"><span>${item.name} x ${item.qty}</span> <span>$${(item.price*item.qty).toFixed(2)}</span></div>`;
+            });
+            document.getElementById('inv-items').innerHTML = itemsHtml;
+            document.getElementById('inv-total').innerText = `$${total.toFixed(2)}`;
+            
+            document.getElementById('invoice-modal').classList.add('active');
+        };
+
+        window.printInvoice = () => { window.print(); };
+
+        // 3D Tilt Effect
+        window.handleTilt = (e, el) => {
+            const rect = el.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const middleX = rect.width / 2;
+            const middleY = rect.height / 2;
+            const rotateX = (y - middleY) / 10;
+            const rotateY = (middleX - x) / 10;
+            el.style.transform = `perspective(1000px) rotateY(${rotateY}deg) rotateX(${rotateX}deg) scale(1.02)`;
+        };
+
+        window.resetTilt = (el) => {
+            el.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1)';
+        };
+
+        // Particles
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const particles = [];
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+                this.color = `rgba(228, 0, 43, ${Math.random() * 0.5 + 0.1})`;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if(this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if(this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for(let i=0; i<80; i++) particles.push(new Particle());
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
